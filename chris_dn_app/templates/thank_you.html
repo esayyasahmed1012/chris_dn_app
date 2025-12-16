@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Thank You - Chris DN App{% endblock %}
+
+{% block content %}
+<section class="py-32 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+    <div class="container mx-auto px-6 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-8">Thank You!</h1>
+        <p class="text-2xl mb-8">Your generous donation has been received. God bless you for helping those in need.</p>
+        <a href="{% url 'home' %}" class="btn-secondary inline-block">Back to Home</a>
+    </div>
+</section>
+{% endblock %}

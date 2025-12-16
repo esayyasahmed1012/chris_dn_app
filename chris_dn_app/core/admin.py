@@ -1,11 +1,5 @@
 from django.contrib import admin
+from .models import Photo, Volunteer
 
-# Register your models here.
-
-from .models import GalleryPhoto, Volunteer
-
-@admin.register(GalleryPhoto)
-class GalleryPhotoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_at')
-
+admin.site.register(Photo)
 admin.site.register(Volunteer)

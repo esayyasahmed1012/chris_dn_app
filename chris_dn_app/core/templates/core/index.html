@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris DN App - Helping Those in Need</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3/dist/cdn.min.js"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; }
+        .hero { background: url('/static/images/hero.jpg') center/cover no-repeat; height: 60vh; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Chris DN App</h1>
+            <nav class="space-x-4 hidden md:block">
+                <a href="#about" class="hover:underline">About</a>
+                <a href="#gallery" class="hover:underline">Gallery</a>
+                <a href="#donate" class="hover:underline">Donate</a>
+                <a href="#volunteer" class="hover:underline">Volunteer</a>
+            </nav>
+            <button x-data="{open: false}" @click="open = !open" class="md:hidden">Menu</button>
+            <div x-show="open" class="flex flex-col md:hidden mt-2 space-y-2">
+                <a href="#about">About</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#donate">Donate</a>
+                <a href="#volunteer">Volunteer</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="hero" class="hero flex items-center justify-center text-white text-center">
+        <div>
+            <h2 class="text-4xl font-bold">Join Us in Helping Those in Need</h2>
+            <p class="text-xl mt-2">Through faith and compassion</p>
+            <a href="#donate" class="mt-4 inline-block bg-red-600 px-6 py-2 rounded text-white">Donate Now</a>
+        </div>
+    </section>
+
+    <section id="about" class="py-12 container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-6">About Us</h2>
+        <p class="text-lg text-gray-700">Chris DN App is a Christian organization dedicated to aiding the needy with food, education, and spiritual support.</p>
+    </section>
+
+    <section id="gallery" class="py-12 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-6">Our Work</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% for photo in photos %}
+                <div class="bg-white p-2 rounded shadow">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-48 object-cover rounded">
+                    <p class="mt-2 text-center">{{ photo.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="donate" class="py-12 container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-6">Donate Now</h2>
+        <form method="post" action="{% url 'initiate_payment' %}" class="max-w-md mx-auto space-y-4">
+            {% csrf_token %}
+            <input type="text" name="first_name" placeholder="First Name" class="w-full p-3 border rounded" required>
+            <input type="text" name="last_name" placeholder="Last Name" class="w-full p-3 border rounded" required>
+            <input type="email" name="email" placeholder="Email" class="w-full p-3 border rounded" required>
+            <input type="tel" name="phone_number" placeholder="Phone (09...)" class="w-full p-3 border rounded">
+            <input type="number" name="amount" placeholder="Amount (ETB)" class="w-full p-3 border rounded" required>
+            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded">Donate via Chapa</button>
+        </form>
+    </section>
+
+    <section id="volunteer" class="py-12 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-6">Help Us</h2>
+            <form method="post" class="max-w-md mx-auto space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="volunteer" value="1">
+                <input type="text" name="name" placeholder="Name" class="w-full p-3 border rounded" required>
+                <input type="email" name="email" placeholder="Email" class="w-full p-3 border rounded" required>
+                <input type="tel" name="phone" placeholder="Phone" class="w-full p-3 border rounded">
+                <textarea name="message" placeholder="How can you help?" class="w-full p-3 border rounded" rows="4" required></textarea>
+                <button type="submit" class="w-full bg-red-600 text-white p-3 rounded">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-blue-600 text-white p-4 text-center">
+        &copy; 2025 Chris DN App. All rights reserved.
+    </footer>
+</body>
+</html>
