@@ -1,29 +1,99 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Chris DN App - Christian Charity{% endblock %}</title>
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prevent Alpine flash -->
+    <style>[x-cloak]{display:none!important}</style>
+
     {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gray-50 text-gray-800">
-    {% include 'navbar.html' %}
 
-    {% block content %}
-    {% endblock %}
+<!-- 🔥 ONE SHARED STATE -->
+<body class="bg-gray-50 text-gray-800 font-sans"
+      x-data="{ open: false }"
+      :class="{ 'overflow-hidden': open }">
 
+    <!-- ================= NAVBAR ================= -->
+    <header class="bg-blue-700 text-white shadow-lg fixed w-full top-0 left-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+
+            <!-- Logo -->
+            <a href="{% url 'home' %}" class="text-2xl md:text-3xl font-bold hover:text-blue-200 transition">
+                Chris DN App
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex space-x-8 text-lg">
+                <a href="#" class="hover:text-blue-200 transition">Home</a>
+                <a href="#about" class="hover:text-blue-200 transition">About</a>
+                <a href="#gallery" class="hover:text-blue-200 transition">Gallery</a>
+                <a href="#donate" class="hover:text-blue-200 transition">Donate</a>
+                <a href="#volunteer" class="hover:text-blue-200 transition">Volunteer</a>
+            </nav>
+
+            <!-- Mobile Burger / X -->
+            <button @click="open = !open"
+                    class="md:hidden focus:outline-none z-50">
+
+                <!-- Burger -->
+                <svg x-show="!open" x-cloak class="w-8 h-8"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+
+                <!-- X -->
+                <svg x-show="open" x-cloak class="w-8 h-8"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= MOBILE MENU ================= -->
+    <div x-show="open"
+         x-cloak
+         x-transition
+         @click.away="open = false"
+         class="md:hidden fixed inset-0 bg-blue-700 z-40 flex items-center justify-center">
+
+        <nav class="text-center space-y-12 text-3xl font-semibold text-white">
+            <a href="#about" @click="open = false" class="block hover:text-blue-200 transition">About</a>
+            <a href="#gallery" @click="open = false" class="block hover:text-blue-200 transition">Gallery</a>
+            <a href="#donate" @click="open = false" class="block hover:text-blue-200 transition">Donate</a>
+            <a href="#volunteer" @click="open = false" class="block hover:text-blue-200 transition">Volunteer</a>
+        </nav>
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="pt-20 min-h-screen">
+        <div class="container mx-auto px-4">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
     <footer class="bg-blue-900 text-white py-12 mt-20">
         <div class="container mx-auto px-6 text-center">
-            <h3 class="text-3xl font-bold mb-4">Chris DN App</h3>
-            <p>Helping those in need through faith and love.</p>
-            <p class="mt-4">&copy; 2025 All rights reserved.</p>
+            <h3 class="text-3xl md:text-4xl font-bold mb-6">Chris DN App</h3>
+            <p class="text-lg mb-4">Helping those in need through faith and love.</p>
+            <p class="text-sm">&copy; {% now "Y" %} Chris DN App. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="{% static 'js/alpine.js' %}"></script>
+    <!-- ✅ Alpine (use CDN to guarantee it works) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>

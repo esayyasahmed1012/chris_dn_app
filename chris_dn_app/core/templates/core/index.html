@@ -1,93 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chris DN App - Helping Those in Need</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3/dist/cdn.min.js"></script>
-    <style>
-        body { font-family: 'Arial', sans-serif; }
-        .hero { background: url('/static/images/hero.jpg') center/cover no-repeat; height: 60vh; }
-    </style>
-</head>
-<body class="bg-gray-50">
-    <header class="bg-blue-600 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Chris DN App</h1>
-            <nav class="space-x-4 hidden md:block">
-                <a href="#about" class="hover:underline">About</a>
-                <a href="#gallery" class="hover:underline">Gallery</a>
-                <a href="#donate" class="hover:underline">Donate</a>
-                <a href="#volunteer" class="hover:underline">Volunteer</a>
-            </nav>
-            <button x-data="{open: false}" @click="open = !open" class="md:hidden">Menu</button>
-            <div x-show="open" class="flex flex-col md:hidden mt-2 space-y-2">
-                <a href="#about">About</a>
-                <a href="#gallery">Gallery</a>
-                <a href="#donate">Donate</a>
-                <a href="#volunteer">Volunteer</a>
-            </div>
-        </div>
-    </header>
+{% extends 'base.html' %}
+{% load static %}
 
-    <section id="hero" class="hero flex items-center justify-center text-white text-center">
-        <div>
-            <h2 class="text-4xl font-bold">Join Us in Helping Those in Need</h2>
-            <p class="text-xl mt-2">Through faith and compassion</p>
-            <a href="#donate" class="mt-4 inline-block bg-red-600 px-6 py-2 rounded text-white">Donate Now</a>
+{% block title %}Home - Chris DN App{% endblock %}
+
+{% block content %}
+    <!-- HERO SECTION -->
+   <section class="relative h-screen hero-section flex items-center justify-center text-center text-white">
+    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+    <div class="relative z-10 px-6 max-w-5xl mx-auto">
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 drop-shadow-lg">
+            Helping Those in Need
+        </h1>
+        <p class="text-xl md:text-3xl mb-10 drop-shadow-md">
+            Through Faith, Love, and Compassion
+        </p>
+        <a href="#donate"
+           class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-10 rounded-full text-xl shadow-2xl transition transform hover:scale-105">
+            Donate Now
+        </a>
+    </div>
+</section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8 text-blue-800">About Us</h2>
+            <p class="text-lg md:text-xl max-w-4xl mx-auto text-gray-700 leading-relaxed">
+                Chris DN App is a Christian organization dedicated to aiding the needy with food, education, and spiritual support.
+            </p>
         </div>
     </section>
 
-    <section id="about" class="py-12 container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-6">About Us</h2>
-        <p class="text-lg text-gray-700">Chris DN App is a Christian organization dedicated to aiding the needy with food, education, and spiritual support.</p>
-    </section>
-
-    <section id="gallery" class="py-12 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-6">Our Work</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {% for photo in photos %}
-                <div class="bg-white p-2 rounded shadow">
-                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-48 object-cover rounded">
-                    <p class="mt-2 text-center">{{ photo.description }}</p>
+    <!-- GALLERY SECTION -->
+    <section id="gallery" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-blue-800">Our Work</h2>
+            {% if photos %}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {% for photo in photos %}
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-64 object-cover">
+                            <div class="p-4 text-center">
+                                <p class="font-semibold">{{ photo.title }}</p>
+                                <p class="text-gray-600 mt-2">{{ photo.description }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+            {% else %}
+                <p class="text-center text-gray-600 text-xl">No photos yet. Upload in the admin panel.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- DONATE SECTION -->
+    <section id="donate" class="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12">Donate Now</h2>
+            <div class="max-w-2xl mx-auto bg-white/10 backdrop-blur rounded-3xl p-10">
+                <form method="post" action="{% url 'initiate_payment' %}">
+                    {% csrf_token %}
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <input type="text" name="first_name" placeholder="First Name" class="p-4 rounded-lg bg-white/90 text-gray-800" required>
+                        <input type="text" name="last_name" placeholder="Last Name" class="p-4 rounded-lg bg-white/90 text-gray-800" required>
+                    </div>
+                    <input type="email" name="email" placeholder="Email" class="w-full p-4 mb-6 rounded-lg bg-white/90 text-gray-800" required>
+                    <input type="tel" name="phone_number" placeholder="Phone (optional)" class="w-full p-4 mb-6 rounded-lg bg-white/90 text-gray-800">
+                    <input type="number" name="amount" placeholder="Amount (ETB)" class="w-full p-4 mb-8 rounded-lg bg-white/90 text-gray-800" required>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-5 rounded-lg text-2xl transition shadow-xl">
+                        Donate via Chapa
+                    </button>
+                </form>
             </div>
         </div>
     </section>
 
-    <section id="donate" class="py-12 container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-6">Donate Now</h2>
-        <form method="post" action="{% url 'initiate_payment' %}" class="max-w-md mx-auto space-y-4">
-            {% csrf_token %}
-            <input type="text" name="first_name" placeholder="First Name" class="w-full p-3 border rounded" required>
-            <input type="text" name="last_name" placeholder="Last Name" class="w-full p-3 border rounded" required>
-            <input type="email" name="email" placeholder="Email" class="w-full p-3 border rounded" required>
-            <input type="tel" name="phone_number" placeholder="Phone (09...)" class="w-full p-3 border rounded">
-            <input type="number" name="amount" placeholder="Amount (ETB)" class="w-full p-3 border rounded" required>
-            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded">Donate via Chapa</button>
-        </form>
-    </section>
-
-    <section id="volunteer" class="py-12 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-6">Help Us</h2>
-            <form method="post" class="max-w-md mx-auto space-y-4">
-                {% csrf_token %}
-                <input type="hidden" name="volunteer" value="1">
-                <input type="text" name="name" placeholder="Name" class="w-full p-3 border rounded" required>
-                <input type="email" name="email" placeholder="Email" class="w-full p-3 border rounded" required>
-                <input type="tel" name="phone" placeholder="Phone" class="w-full p-3 border rounded">
-                <textarea name="message" placeholder="How can you help?" class="w-full p-3 border rounded" rows="4" required></textarea>
-                <button type="submit" class="w-full bg-red-600 text-white p-3 rounded">Submit</button>
-            </form>
+    <!-- VOLUNTEER SECTION -->
+    <section id="volunteer" class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-blue-800">Help Us</h2>
+            <div class="max-w-xl mx-auto">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded mb-6">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Name" class="w-full p-4 border rounded-lg" required>
+                    <input type="email" name="email" placeholder="Email" class="w-full p-4 border rounded-lg" required>
+                    <input type="tel" name="phone" placeholder="Phone" class="w-full p-4 border rounded-lg">
+                    <textarea name="message" rows="5" placeholder="How can you help?" class="w-full p-4 border rounded-lg" required></textarea>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-5 rounded-lg text-xl transition">
+                        Submit
+                    </button>
+                </form>
+            </div>
         </div>
     </section>
-
-    <footer class="bg-blue-600 text-white p-4 text-center">
-        &copy; 2025 Chris DN App. All rights reserved.
-    </footer>
-</body>
-</html>
+{% endblock %}
